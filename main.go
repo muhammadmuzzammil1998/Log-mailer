@@ -18,16 +18,16 @@ import (
 func main() {
 	var createJSON bool
 	var jsonfile string
-	flag.BoolVar(&createJSON, "generate", false, "Generate data file.")
-	flag.StringVar(&jsonfile, "conf", "data.json", "Location of configuration file")
+	flag.BoolVar(&createJSON, "generate", false, "Generate configuration file.")
+	flag.StringVar(&jsonfile, "conf", "configuration.json", "Path to configuration file.")
 	flag.Parse()
 	if createJSON {
 		reader := bufio.NewReader(os.Stdin)
-		if r := ask("Location to store file (default: ./data.json): "); strings.TrimSpace(r) != "" {
+		if r := ask("Location to store configuration file (default: ./" + jsonfile + "): "); strings.TrimSpace(r) != "" {
 			jsonfile = r
 		}
 		if _, err := os.Stat(jsonfile); err == nil {
-			fmt.Print("Data file exists, overwrite? (y/n): ")
+			fmt.Print("Configuration file exists, overwrite? (y/n): ")
 			if r, _ := reader.ReadString('\n'); strings.ToLower(strings.TrimSpace(r)) != "y" {
 				return
 			}
@@ -67,7 +67,7 @@ func main() {
 				",\n\t\"logs\": \"%s\",\n\t\"interval\": \"%s\",\n\t\"reset\": \"%s\"\n}",
 			fromName, fromEmail, toName, toEmail, subject, server, port, user, pass, logFile, interval, reset)
 		f.Close()
-		fmt.Printf("Data file generated: %s.\n", jsonfile)
+		fmt.Printf("Configuration file generated: %s.\n", jsonfile)
 		return
 	}
 	if _, err := os.Stat(jsonfile); err != nil {
