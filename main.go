@@ -33,7 +33,7 @@ func main() {
 			}
 			err := os.Remove(jsonfile)
 			if err != nil {
-				log.Println(err)
+				log.Fatalln(err)
 			}
 		}
 		var (
@@ -57,8 +57,7 @@ func main() {
 		}
 		f, err := os.OpenFile(jsonfile, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			log.Println(err)
-			return
+			log.Fatalln(err)
 		}
 		fmt.Fprintf(f,
 			"{\n\t\"from\": {\n\t\t\"name\": \"%s\",\n\t\t\"email\": \"%s\"\n\t},\n\t\"to\": {\n\t\t\"name\""+
@@ -71,12 +70,12 @@ func main() {
 		return
 	}
 	if _, err := os.Stat(jsonfile); err != nil {
-		fmt.Printf("Unable to find configuration file (%s).\n", jsonfile)
+		log.Fatalf("Unable to find configuration file (%s).\n", jsonfile)
 		return
 	}
 	data, err := ioutil.ReadFile(jsonfile)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
 	var (
 		from     = fmt.Sprintf(`"%s" <%s>`, get(data, "from.name"), get(data, "from.email"))
@@ -92,8 +91,7 @@ func main() {
 		message  = ""
 	)
 	if e != nil {
-		log.Print(e)
-		return
+		log.Fatalln(e)
 	}
 	if interval[0] == '+' || interval[0] == '-' {
 		interval = strings.Replace(interval, string(interval[0]), "", -1)
@@ -116,6 +114,7 @@ func main() {
 		file, err := os.Open(logs)
 		if err != nil {
 			log.Println(err)
+			return
 		}
 		defer file.Close()
 		message += "<div style=\"font-family: monospace;background: #ecf0f1;padding: 20px;border-radius: 9px;font-size: 150%;margin: 30px;\">"
@@ -137,8 +136,12 @@ func main() {
 		}
 		log.Printf("\n%s\n\n", message)
 		if reset {
-			os.Remove(logs)
-			os.Create(logs)
+			if err := os.Remove(logs); err != nil {
+				log.Println(err)
+			}
+			if _, err := os.Create(logs); err != nil {
+				log.Println(err)
+			}
 		}
 	}, interval)
 }
@@ -146,9 +149,9 @@ func repeat(f func(), interval string) {
 	f()
 	d, err := time.ParseDuration(interval)
 	if err != nil {
-		log.Println(err)
+		log.Fatalln(err)
 	}
-	for _ = range time.Tick(d) {
+	for range time.Tick(d) {
 		f()
 	}
 }
