@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -36,35 +37,40 @@ func main() {
 				log.Fatalln(err)
 			}
 		}
-		var (
-			fromName  = ask("Enter \"From\" name:\t")
-			fromEmail = ask("Enter \"From\" email:\t")
-			toName    = ask("Enter \"To\" name:\t")
-			toEmail   = ask("Enter \"To\" email:\t")
-			subject   = ask("Enter subject:\t\t")
-			server    = ask("Enter SMTP server:\t")
-			port      = ask("Port:\t\t\t")
-			user      = ask("Username:\t\t")
-			pass      = ask("Password:\t\t")
-			logFile   = ask("Location of logs:\t")
-			interval  = ask("Interval:\t\t")
-			reset     = ask("Reset log file? (y/n):\t")
-		)
-		if reset != "y" {
-			reset = "false"
+		c := &Config{
+			From: EmailStruct{
+				Name:  ask("Enter \"From\" name:\t"),
+				Email: ask("Enter \"From\" email:\t"),
+			},
+			To: EmailStruct{
+				Name:  ask("Enter \"To\" name:\t"),
+				Email: ask("Enter \"To\" email:\t"),
+			},
+			Subject: ask("Enter subject:\t\t"),
+			Server:  ask("Enter SMTP server:\t"),
+			Port:    ask("Port:\t\t\t"),
+			Credentials: Credentials{
+				Username: ask("Username:\t\t"),
+				Password: ask("Password:\t\t"),
+			},
+			Logs:     ask("Location of logs:\t"),
+			Interval: ask("Interval:\t\t"),
+			Reset:    ask("Reset log file? (y/n):\t"),
+		}
+		if c.Reset != "y" {
+			c.Reset = "false"
 		} else {
-			reset = "true"
+			c.Reset = "true"
 		}
 		f, err := os.OpenFile(jsonfile, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		fmt.Fprintf(f,
-			"{\n\t\"from\": {\n\t\t\"name\": \"%s\",\n\t\t\"email\": \"%s\"\n\t},\n\t\"to\": {\n\t\t\"name\""+
-				": \"%s\",\n\t\t\"email\": \"%s\"\n\t},\n\t\"subject\": \"%s\",\n\t\"server\": \"%s\",\n\t\""+
-				"port\": \"%s\",\n\t\"credentials\": {\n\t\t\"user\": \"%s\",\n\t\t\"password\": \"%s\"\n\t}"+
-				",\n\t\"logs\": \"%s\",\n\t\"interval\": \"%s\",\n\t\"reset\": \"%s\"\n}",
-			fromName, fromEmail, toName, toEmail, subject, server, port, user, pass, logFile, interval, reset)
+		j, err := json.MarshalIndent(c, "", "\t")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		fmt.Fprintf(f, "%s", j)
 		f.Close()
 		fmt.Printf("Configuration file generated: %s.\n", jsonfile)
 		return
