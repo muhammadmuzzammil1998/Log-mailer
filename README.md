@@ -68,6 +68,14 @@ Configuration file generated: configuration.json.
 }
 ```
 
+## Generating an empty configuration file.
+Just in case someone doesn't want to do it interactively.
+```bash
+$ .\Log-mailer.exe -generate -empty
+Location to store configuration file (default: ./configuration.json): configuration_template.json
+Empty configuration file generated: configuration_template.json.
+```
+
 ## Starting Log mailer
 ### Using default (configuration.json) configuration
 ```bash
@@ -83,7 +91,9 @@ You can start it as different background processes with `-conf` flag and differe
 ```
 Usage of ./Log-mailer:
   -conf string
-        Path to configuration file. (default "configuration.json")
+        Configuration file to load. (default "configuration.json")
+  -empty
+        Generate an empty configuration file. Use with -generate.
   -generate
-        Generate configuration file.
+        Generate configuration file interactively.
 ```

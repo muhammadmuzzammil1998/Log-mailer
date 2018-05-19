@@ -1,0 +1,20 @@
+{
+	"from": {
+		"name": "",
+		"email": ""
+	},
+	"to": {
+		"name": "",
+		"email": ""
+	},
+	"subject": "",
+	"server": "",
+	"port": "",
+	"credentials": {
+		"user": "",
+		"password": ""
+	},
+	"logs": "",
+	"interval": "",
+	"reset": ""
+}

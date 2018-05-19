@@ -17,10 +17,11 @@ import (
 )
 
 func main() {
-	var createJSON bool
+	var createJSON, emptyJSON bool
 	var jsonfile string
-	flag.BoolVar(&createJSON, "generate", false, "Generate configuration file.")
-	flag.StringVar(&jsonfile, "conf", "configuration.json", "Path to configuration file.")
+	flag.BoolVar(&createJSON, "generate", false, "Generate configuration file interactively.")
+	flag.BoolVar(&emptyJSON, "empty", false, "Generate an empty configuration file. Use with -generate.")
+	flag.StringVar(&jsonfile, "conf", "configuration.json", "Configuration file to load.")
 	flag.Parse()
 	if createJSON {
 		reader := bufio.NewReader(os.Stdin)
@@ -36,6 +37,20 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			}
+		}
+		f, err := os.OpenFile(jsonfile, os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		defer f.Close()
+		if emptyJSON {
+			j, err := json.MarshalIndent(&Config{}, "", "\t")
+			if err != nil {
+				log.Fatalln(err)
+			}
+			fmt.Fprintf(f, "%s", j)
+			fmt.Printf("Empty configuration file generated: %s.\n", jsonfile)
+			return
 		}
 		c := &Config{
 			From: EmailStruct{
@@ -62,16 +77,11 @@ func main() {
 		} else {
 			c.Reset = "true"
 		}
-		f, err := os.OpenFile(jsonfile, os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatalln(err)
-		}
 		j, err := json.MarshalIndent(c, "", "\t")
 		if err != nil {
 			log.Fatalln(err)
 		}
 		fmt.Fprintf(f, "%s", j)
-		f.Close()
 		fmt.Printf("Configuration file generated: %s.\n", jsonfile)
 		return
 	}
