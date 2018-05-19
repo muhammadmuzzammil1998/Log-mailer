@@ -28,8 +28,8 @@ func main() {
 		if r := ask("Location to store configuration file (default: ./" + jsonfile + "): "); strings.TrimSpace(r) != "" {
 			jsonfile = r
 		}
-		if _, err := os.Stat(jsonfile); err == nil {
-			fmt.Print("Configuration file exists, overwrite? (y/n): ")
+		if fStat, err := os.Stat(jsonfile); err == nil && !fStat.IsDir() {
+			fmt.Printf("Configuration file (%s) exists, overwrite? (y/n): ", jsonfile)
 			if r, _ := reader.ReadString('\n'); strings.ToLower(strings.TrimSpace(r)) != "y" {
 				return
 			}
