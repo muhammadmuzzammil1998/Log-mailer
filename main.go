@@ -12,8 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/tidwall/gjson"
 )
 
 func main() {
@@ -93,17 +91,23 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	c := &Config{}
+	err = json.Unmarshal(data, c)
+	if err != nil {
+		log.Println(err)
+		return
+	}
 	var (
-		from     = fmt.Sprintf(`"%s" <%s>`, get(data, "from.name"), get(data, "from.email"))
-		to       = fmt.Sprintf(`"%s" <%s>`, get(data, "to.name"), get(data, "to.email"))
-		server   = get(data, "server")
-		port     = get(data, "port")
-		user     = get(data, "credentials.user")
-		pass     = get(data, "credentials.password")
-		sub      = get(data, "subject")
-		logs     = get(data, "logs")
-		interval = get(data, "interval")
-		reset, e = strconv.ParseBool(get(data, "reset"))
+		from     = fmt.Sprintf(`"%s" <%s>`, c.From.Name, c.From.Email)
+		to       = fmt.Sprintf(`"%s" <%s>`, c.To.Name, c.To.Email)
+		server   = c.Server
+		port     = c.Port
+		user     = c.Credentials.Username
+		pass     = c.Credentials.Password
+		sub      = c.Subject
+		logs     = c.Logs
+		interval = c.Interval
+		reset, e = strconv.ParseBool(c.Reset)
 		message  = ""
 	)
 	if e != nil {
@@ -170,9 +174,6 @@ func repeat(f func(), interval string) {
 	for range time.Tick(d) {
 		f()
 	}
-}
-func get(data []byte, path string) string {
-	return gjson.Get(fmt.Sprintf("%s", data), path).String()
 }
 func ask(s string) string {
 	reader := bufio.NewReader(os.Stdin)

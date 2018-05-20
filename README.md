@@ -6,7 +6,6 @@ Prerequisites: [Git](https://git-scm.com/downloads), [Go](https://golang.org/dl/
 ```bash
 $ git clone https://github.com/muhammadmuzzammil1998/Log-mailer
 $ cd Log-mailer
-$ go get github.com/tidwall/gjson
 $ go build
 ```
 
