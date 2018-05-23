@@ -67,6 +67,31 @@ Configuration file generated: configuration.json.
 }
 ```
 
+### Go structure of configurations
+```go
+type Config struct {
+	From        EmailStruct `json:"from"`
+	To          EmailStruct `json:"to"`
+	Subject     string      `json:"subject"`
+	Server      string      `json:"server"`
+	Port        string      `json:"port"`
+	Credentials Credentials `json:"credentials"`
+	Logs        string      `json:"logs"`
+	Interval    string      `json:"interval"`
+	Reset       string      `json:"reset"`
+}
+
+type EmailStruct struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type Credentials struct {
+	Username string `json:"user"`
+	Password string `json:"password"`
+}
+```
+
 ## Generating an empty configuration file.
 Just in case someone doesn't want to do it interactively.
 ```bash
