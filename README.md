@@ -29,7 +29,9 @@ Interval:               6h
 Reset log file? (y/n):  y
 Configuration file generated: configuration.json.
 ```
-[![asciicast](https://asciinema.org/a/rBWW7nvmJtezsRnn3dzfvafvN.png)](https://asciinema.org/a/rBWW7nvmJtezsRnn3dzfvafvN)
+
+[![asciicast](https://asciinema.org/a/rBWW7nvmJtezsRnn3dzfvafvN.png?AAAAAAH)](https://asciinema.org/a/rBWW7nvmJtezsRnn3dzfvafvN)
+
 ### Description
 | Input              | Description                                                                                 |
 |:-------------------|:--------------------------------------------------------------------------------------------|
