@@ -16,7 +16,7 @@ func main() {
 	var createJSON, emptyJSON bool
 	var fileNameJSON string
 	flag.BoolVar(&createJSON, "generate", false, "Generate configuration file interactively.")
-	flag.BoolVar(&emptyJSON, "empty", false, "Generate an empty configuration file. Use with -generate.")
+	flag.BoolVar(&emptyJSON, "empty", false, "Generate an empty configuration file.")
 	flag.StringVar(&fileNameJSON, "conf", "configuration.json", "Configuration file to load.")
 	flag.Parse()
 

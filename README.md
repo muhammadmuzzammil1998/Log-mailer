@@ -121,7 +121,7 @@ Usage of ./Log-mailer:
   -conf string
         Configuration file to load. (default "configuration.json")
   -empty
-        Generate an empty configuration file. Use with -generate.
+        Generate an empty configuration file.
   -generate
         Generate configuration file interactively.
 ```
