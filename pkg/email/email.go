@@ -13,33 +13,20 @@ import (
 	"github.com/arehmandev/Log-mailer/pkg/utils"
 )
 
-func (c *Config) verifyEmail() {
-
-	if c.Interval[0] == '+' || c.Interval[0] == '-' {
-		c.Interval = strings.Replace(c.Interval, string(c.Interval[0]), "", -1)
-	}
-
-	if i, _ := os.Stat(c.Logs); !(i.Size() > 0) {
-		log.Printf("\n%s\n\n", "Log file is empty.")
-		return
-	}
-
-}
-
 // EmailLogs -
 func (c *Config) EmailLogs() {
 
-	reset, err := strconv.ParseBool(c.Reset)
-
-	if err != nil {
-		log.Fatalln(err)
+	reset, emptylogfile := c.verifyEmail()
+	if emptylogfile {
+		log.Printf("\n%s\n\n", "Log file is empty.")
+		return
 	}
 
 	c.generateHeaderMap()
 
 	c.insertMessage()
 
-	err = c.sendEmail()
+	err := c.sendEmail()
 	utils.Check(err)
 
 	if reset {
@@ -50,6 +37,23 @@ func (c *Config) EmailLogs() {
 			log.Println(err)
 		}
 	}
+
+}
+
+func (c *Config) verifyEmail() (reset, emptylogfile bool) {
+
+	reset, err := strconv.ParseBool(c.Reset)
+	utils.Check(err)
+
+	if c.Interval[0] == '+' || c.Interval[0] == '-' {
+		c.Interval = strings.Replace(c.Interval, string(c.Interval[0]), "", -1)
+	}
+
+	if i, _ := os.Stat(c.Logs); !(i.Size() > 0) {
+		emptylogfile = true
+	}
+
+	return reset, emptylogfile
 
 }
 
