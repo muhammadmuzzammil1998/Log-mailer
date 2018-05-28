@@ -1,15 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
-	"io/ioutil"
 	"log"
 	"os"
 
-	"github.com/arehmandev/Log-mailer/pkg/config"
 	"github.com/arehmandev/Log-mailer/pkg/email"
-	"github.com/arehmandev/Log-mailer/pkg/utils"
 )
 
 func main() {
@@ -20,21 +16,13 @@ func main() {
 	flag.StringVar(&fileNameJSON, "conf", "configuration.json", "Configuration file to load.")
 	flag.Parse()
 
-	// Generate an empty JSON file is empty flag was provided
-	config.GenerateEmptyJSON(emptyJSON, fileNameJSON)
-
-	// Generate the JSON file if generate flag was given
-	config.GenerateJSON(createJSON, emptyJSON, fileNameJSON)
-
 	if _, err := os.Stat(fileNameJSON); err != nil {
 		log.Fatalf("Unable to find configuration file (%s).\n", fileNameJSON)
 	}
 
-	data, err := ioutil.ReadFile(fileNameJSON)
-	utils.Check(err)
+	email := new(email.Config)
 
-	c := new(email.Config)
-	err = json.Unmarshal(data, c)
-	utils.Check(err)
-	utils.Repeat(c.EmailLogs, c.Interval)
+	email.GenerateConfigJSONFiles(createJSON, emptyJSON, fileNameJSON)
+	email.Email(fileNameJSON)
+
 }

@@ -1,4 +1,4 @@
-package config
+package email
 
 import (
 	"bufio"
@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/arehmandev/Log-mailer/pkg/email"
 	"github.com/arehmandev/Log-mailer/pkg/utils"
 )
 
@@ -28,7 +27,7 @@ func GenerateJSON(createJSON, emptyJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	c := email.GenerateConfig()
+	c := GenerateConfig()
 
 	fmt.Println(c)
 
@@ -58,7 +57,7 @@ func GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	j, err := json.MarshalIndent(&email.Config{}, "", "\t")
+	j, err := json.MarshalIndent(&Config{}, "", "\t")
 	if err != nil {
 		log.Fatalln(err)
 	}
