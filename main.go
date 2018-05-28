@@ -24,7 +24,7 @@ func main() {
 	config.GenerateEmptyJSON(emptyJSON, fileNameJSON)
 
 	// Generate the JSON file if generate flag was given
-	config.GenerateJSON(createJSON, fileNameJSON)
+	config.GenerateJSON(createJSON, emptyJSON, fileNameJSON)
 
 	if _, err := os.Stat(fileNameJSON); err != nil {
 		log.Fatalf("Unable to find configuration file (%s).\n", fileNameJSON)

@@ -16,11 +16,7 @@ import (
 // EmailLogs -
 func (c *Config) EmailLogs() {
 
-	reset, emptylogfile := c.verifyEmail()
-	if emptylogfile {
-		log.Printf("\n%s\n\n", "Log file is empty.")
-		return
-	}
+	reset := c.verifyEmail()
 
 	c.generateHeaderMap()
 
@@ -40,7 +36,7 @@ func (c *Config) EmailLogs() {
 
 }
 
-func (c *Config) verifyEmail() (reset, emptylogfile bool) {
+func (c *Config) verifyEmail() (reset bool) {
 
 	reset, err := strconv.ParseBool(c.Reset)
 	utils.Check(err)
@@ -49,16 +45,19 @@ func (c *Config) verifyEmail() (reset, emptylogfile bool) {
 		c.Interval = strings.Replace(c.Interval, string(c.Interval[0]), "", -1)
 	}
 
-	if i, _ := os.Stat(c.Logs); !(i.Size() > 0) {
-		emptylogfile = true
+	if i, err := os.Stat(c.Logs); err != nil {
+		log.Fatalln(err)
+	} else if !(i.Size() > 0) {
+		log.Fatalln("Log file is empty:", c.Logs)
 	}
 
-	return reset, emptylogfile
+	return reset
 
 }
 
 func (c *Config) generateHeaderMap() {
 
+	c.Headers = make(map[string]string)
 	c.Headers["From"] = fmt.Sprintf(`"%s" <%s>`, c.From.Name, c.From.Email)
 	c.Headers["To"] = fmt.Sprintf(`"%s" <%s>`, c.To.Name, c.To.Email)
 	c.Headers["Subject"] = c.Subject

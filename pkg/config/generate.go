@@ -13,9 +13,10 @@ import (
 )
 
 // GenerateJSON -
-func GenerateJSON(createJSON bool, fileNameJSON string) {
+func GenerateJSON(createJSON, emptyJSON bool, fileNameJSON string) {
 
 	if !createJSON {
+		fmt.Println("[SKIPPING] No configuration.json was created")
 		return
 	}
 
@@ -27,8 +28,9 @@ func GenerateJSON(createJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	c := new(email.Config)
-	c.GenerateConfig()
+	c := email.GenerateConfig()
+
+	fmt.Println(c)
 
 	j, err := json.MarshalIndent(c, "", "\t")
 	if err != nil {
@@ -36,7 +38,7 @@ func GenerateJSON(createJSON bool, fileNameJSON string) {
 	}
 	fmt.Fprintf(f, "%s", j)
 	fmt.Printf("Configuration file generated: %s.\n", fileNameJSON)
-	return
+	os.Exit(0)
 
 }
 
@@ -59,7 +61,7 @@ func GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 	}
 	fmt.Fprintf(f, "%s", j)
 	fmt.Printf("Empty configuration file generated: %s.\n", fileNameJSON)
-	return
+	os.Exit(0)
 
 }
 
