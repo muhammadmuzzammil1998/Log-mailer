@@ -1,4 +1,4 @@
-package main
+package email
 
 import (
 	"bufio"
@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/arehmandev/Log-mailer/pkg/utils"
 )
 
 func (c *Config) verifyEmail() {
@@ -24,7 +26,8 @@ func (c *Config) verifyEmail() {
 
 }
 
-func (c *Config) emailLogs() {
+// EmailLogs -
+func (c *Config) EmailLogs() {
 
 	reset, err := strconv.ParseBool(c.Reset)
 
@@ -37,7 +40,7 @@ func (c *Config) emailLogs() {
 	c.insertMessage()
 
 	err = c.sendEmail()
-	check(err)
+	utils.Check(err)
 
 	if reset {
 		if err := os.Remove(c.Logs); err != nil {
@@ -66,7 +69,7 @@ func (c *Config) generateHeaderMap() {
 func (c *Config) insertMessage() {
 
 	file, err := os.Open(c.Logs)
-	check(err)
+	utils.Check(err)
 
 	defer file.Close()
 

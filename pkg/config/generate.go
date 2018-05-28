@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"bufio"
@@ -7,9 +7,13 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/arehmandev/Log-mailer/pkg/email"
+	"github.com/arehmandev/Log-mailer/pkg/utils"
 )
 
-func generateJSON(createJSON bool, fileNameJSON string) {
+// GenerateJSON -
+func GenerateJSON(createJSON bool, fileNameJSON string) {
 
 	if !createJSON {
 		return
@@ -23,8 +27,8 @@ func generateJSON(createJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	c := new(Config)
-	c.generateConfig()
+	c := new(email.Config)
+	c.GenerateConfig()
 
 	j, err := json.MarshalIndent(c, "", "\t")
 	if err != nil {
@@ -36,7 +40,8 @@ func generateJSON(createJSON bool, fileNameJSON string) {
 
 }
 
-func generateEmptyJSON(emptyJSON bool, fileNameJSON string) {
+// GenerateEmptyJSON -
+func GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 
 	if !emptyJSON {
 		return
@@ -48,7 +53,7 @@ func generateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	j, err := json.MarshalIndent(&Config{}, "", "\t")
+	j, err := json.MarshalIndent(&email.Config{}, "", "\t")
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -61,7 +66,7 @@ func generateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 func checkForOverwrite(fileNameJSON string) {
 
 	reader := bufio.NewReader(os.Stdin)
-	if r := ask("Location to store configuration file (default: ./" + fileNameJSON + "): "); strings.TrimSpace(r) != "" {
+	if r := utils.Ask("Location to store configuration file (default: ./" + fileNameJSON + "): "); strings.TrimSpace(r) != "" {
 		fileNameJSON = r
 	}
 	if fStat, err := os.Stat(fileNameJSON); err == nil && !fStat.IsDir() {

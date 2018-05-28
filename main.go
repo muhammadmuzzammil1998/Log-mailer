@@ -6,6 +6,10 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/arehmandev/Log-mailer/pkg/config"
+	"github.com/arehmandev/Log-mailer/pkg/email"
+	"github.com/arehmandev/Log-mailer/pkg/utils"
 )
 
 func main() {
@@ -17,23 +21,23 @@ func main() {
 	flag.Parse()
 
 	// Generate an empty JSON file is empty flag was provided
-	generateEmptyJSON(emptyJSON, fileNameJSON)
+	config.GenerateEmptyJSON(emptyJSON, fileNameJSON)
 
 	// Generate the JSON file if generate flag was given
-	generateJSON(createJSON, fileNameJSON)
+	config.GenerateJSON(createJSON, fileNameJSON)
 
 	if _, err := os.Stat(fileNameJSON); err != nil {
 		log.Fatalf("Unable to find configuration file (%s).\n", fileNameJSON)
 	}
 
 	data, err := ioutil.ReadFile(fileNameJSON)
-	check(err)
+	utils.Check(err)
 
-	c := new(Config)
+	c := new(email.Config)
 	err = json.Unmarshal(data, c)
-	check(err)
+	utils.Check(err)
 
-	c.generateConfig()
+	c.GenerateConfig()
 
-	repeat(c.emailLogs, c.Interval)
+	utils.Repeat(c.EmailLogs, c.Interval)
 }
