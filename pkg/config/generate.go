@@ -49,6 +49,9 @@ func GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 		return
 	}
 
+	err := os.RemoveAll(fileNameJSON)
+	utils.Check(err)
+
 	f, err := os.OpenFile(fileNameJSON, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalln(err)
