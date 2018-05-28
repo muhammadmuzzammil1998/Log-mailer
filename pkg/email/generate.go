@@ -12,7 +12,9 @@ import (
 )
 
 // GenerateJSON -
-func GenerateJSON(createJSON, emptyJSON bool, fileNameJSON string) {
+func (c *Config) GenerateJSON(createJSON, emptyJSON bool, fileNameJSON string) {
+
+	c = GenerateConfig()
 
 	if !createJSON {
 		fmt.Println("[SKIPPING] No configuration.json was created")
@@ -27,10 +29,6 @@ func GenerateJSON(createJSON, emptyJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	c := GenerateConfig()
-
-	fmt.Println(c)
-
 	j, err := json.MarshalIndent(c, "", "\t")
 	if err != nil {
 		log.Fatalln(err)
@@ -42,7 +40,7 @@ func GenerateJSON(createJSON, emptyJSON bool, fileNameJSON string) {
 }
 
 // GenerateEmptyJSON -
-func GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
+func (c *Config) GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 
 	if !emptyJSON {
 		return
@@ -57,7 +55,7 @@ func GenerateEmptyJSON(emptyJSON bool, fileNameJSON string) {
 	}
 	defer f.Close()
 
-	j, err := json.MarshalIndent(&Config{}, "", "\t")
+	j, err := json.MarshalIndent(c, "", "\t")
 	if err != nil {
 		log.Fatalln(err)
 	}

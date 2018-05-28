@@ -17,10 +17,10 @@ type Emailer interface {
 func (c *Config) GenerateConfigJSONFiles(createJSON, emptyJSON bool, fileNameJSON string) {
 
 	// Generate an empty JSON file is empty flag was provided
-	GenerateEmptyJSON(emptyJSON, fileNameJSON)
+	c.GenerateEmptyJSON(emptyJSON, fileNameJSON)
 
 	// Generate the JSON file if generate flag was given
-	GenerateJSON(createJSON, emptyJSON, fileNameJSON)
+	c.GenerateJSON(createJSON, emptyJSON, fileNameJSON)
 
 }
 
