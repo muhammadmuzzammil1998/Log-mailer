@@ -36,8 +36,5 @@ func main() {
 	c := new(email.Config)
 	err = json.Unmarshal(data, c)
 	utils.Check(err)
-
-	c.GenerateConfig()
-
 	utils.Repeat(c.EmailLogs, c.Interval)
 }
